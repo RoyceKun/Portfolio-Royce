@@ -1,0 +1,3079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Royce | Creative Technologist</title>
+    <style>
+        :root {
+            --primary: #6200ee;
+            --secondary: #03dac6;
+            --accent: #ff0266;
+            --light: #f5f5f5;
+            --dark: #121212;
+            --pixel-size: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><circle cx='12' cy='12' r='8' fill='%2303dac6' opacity='0.8'/></svg>") 12 12, auto;
+        }
+
+        header {
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pixel-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            color: var(--secondary);
+            text-shadow: 3px 3px 0px var(--accent);
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--light);
+            position: relative;
+            z-index: 1;
+        }
+
+        p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-prompt {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 1;
+            font-size: 1.2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(18, 18, 18, 0.9);
+            padding: 1rem;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        nav button {
+            background: none;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        nav button:hover {
+            background-color: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        nav button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        nav button:hover::after {
+            transform: translateX(0);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .section-header h3 {
+            font-size: 2rem;
+            color: var(--secondary);
+            position: relative;
+        }
+
+        .section-header .line {
+            flex: 1;
+            height: 2px;
+            background-color: var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header .line::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid transparent;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(3, 218, 198, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .project-header {
+            padding: 1rem;
+            background-color: rgba(3, 218, 198, 0.1);
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        .project-title {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .project-description {
+            font-size: 0.9rem;
+            color: var(--light);
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-tag {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .project-content {
+            flex: 1;
+            padding: 1rem;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            touch-action: none;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .contact {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .contact h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .contact p {
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px) rotate(10deg);
+            background-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(255, 2, 102, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pixel-character {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 10 10'%3E%3Crect x='3' y='0' width='4' height='2' fill='%23ff0266'/%3E%3Crect x='2' y='2' width='6' height='2' fill='%23ff0266'/%3E%3Crect x='1' y='4' width='8' height='2' fill='%23ff0266'/%3E%3Crect x='2' y='6' width='2' height='2' fill='%23ff0266'/%3E%3Crect x='6' y='6' width='2' height='2' fill='%23ff0266'/%3E%3C/svg%3E");
+            background-size: contain;
+            transition: top 0.5s ease, left 0.5s ease;
+            z-index: 1000;
+            display: none;
+            pointer-events: none;
+        }
+
+        .easter-egg {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: transparent;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #modal-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #modal-content {
+            background-color: var(--dark);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+            position: relative;
+        }
+
+        #modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                height: 350px;
+            }
+        }
+
+        /* Easter egg - pixel rain when clicking certain areas */
+        .pixel {
+            position: absolute;
+            width: var(--pixel-size);
+            height: var(--pixel-size);
+            background-color: var(--secondary);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Konami code secret theme */
+        body.konami-activated {
+            --primary: #ff6600;
+            --secondary: #ffcc00;
+            --accent: #ff00cc;
+            background-color: #330033;
+        }
+
+        /* Secret 8-bit theme */
+        body.eight-bit {
+            image-rendering: pixelated;
+        }
+
+        body.eight-bit * {
+            border-radius: 0 !important;
+        }
+
+        body.eight-bit h1, 
+        body.eight-bit h2, 
+        body.eight-bit h3 {
+            text-shadow: 3px 3px 0 #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="pixel-character" id="pixel-character"></div>
+    
+    <header>
+        <canvas id="pixel-canvas"></canvas>
+        <h1>JOHN ROYCE</h1>
+        <h2>Creative Technologist & Code Explorer</h2>
+        <p>Welcome to my interactive playground! Click, drag, and explore to discover projects, games, and digital experiments that showcase my passion for creative coding.</p>
+        <div class="scroll-prompt">Scroll to Explore</div>
+        <div class="easter-egg" style="top: 20px; right: 30px;" data-trigger="pixel-rain"></div>
+    </header>
+    
+    <nav>
+        <button data-section="experiments">Experiments</button>
+        <button data-section="interactive-demos">Interactive Demos</button>
+        <button data-section="creative-coding">Creative Coding</button>
+        <button data-section="side-projects">Side Projects</button>
+        <button data-section="contact">Contact</button>
+    </nav>
+    
+    <main>
+        <section id="experiments" class="visible">
+            <div class="section-header">
+                <h3>Experiments</h3>
+                <div class="line"></div>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Particle Flow</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Canvas</span>
+                            <span class="project-tag">Physics</span>
+                        </div>
+                        <p class="project-description">Interactive particle system with fluid dynamics.</p>
+                    </div>
+                    <div class="project-content">
+                        <canvas id="particle-canvas" width="300" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Audio Visualizer</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Web Audio</span>
+                            <span class="project-tag">Canvas</span>
+                        </div>
+                        <p class="project-description">Visualize sound waves and frequencies.</p>
+                    </div>
+                    <div class="project-content">
+                        <div id="audio-visualizer">
+                            <canvas id="audio-canvas" width="300" height="250"></canvas>
+                            <button id="start-audio" style="position:absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">Start Audio</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Shape Morpher</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">SVG</span>
+                            <span class="project-tag">Animation</span>
+                        </div>
+                        <p class="project-description">Smooth transitions between geometric shapes.</p>
+                    </div>
+                    <div class="project-content">
+                        <svg id="shape-morpher" width="100%" height="100%" viewBox="0 0 200 200"></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="interactive-demos">
+            <div class="section-header">
+                <h3>Interactive Demos</h3>
+                <div class="line"></div>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Color Palette Generator</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Design</span>
+                            <span class="project-tag">UI</span>
+                        </div>
+                        <p class="project-description">Generate harmonious color schemes from a base color.</p>
+                    </div>
+                    <div class="project-content">
+                        <div id="color-palette">
+                            <div id="palette-container" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+                                <input type="color" id="base-color" value="#03dac6" style="margin-bottom: 10px;">
+                                <div id="palette-swatches" style="flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap: 5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Physics Playground</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Physics</span>
+                            <span class="project-tag">Interaction</span>
+                        </div>
+                        <p class="project-description">Play with gravity, friction, and collisions.</p>
+                    </div>
+                    <div class="project-content">
+                        <canvas id="physics-canvas" width="300" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Typographic Animator</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Typography</span>
+                            <span class="project-tag">Animation</span>
+                        </div>
+                        <p class="project-description">Animate text with various effects and styles.</p>
+                    </div>
+                    <div class="project-content">
+                        <div id="text-animator" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; text-align: center; padding: 10px;">
+                            <h3 id="animated-text" style="font-size: 2rem; color: var(--secondary);">Type Something Amazing</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="creative-coding">
+            <div class="section-header">
+                <h3>Creative Coding</h3>
+                <div class="line"></div>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Generative Art System</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Generative Art</span>
+                            <span class="project-tag">Algorithms</span>
+                        </div>
+                        <p class="project-description">Creating unique artwork through code and randomness.</p>
+                    </div>
+                    <div class="project-content">
+                        <canvas id="generative-art" width="300" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Fractal Explorer</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Fractals</span>
+                            <span class="project-tag">Math</span>
+                        </div>
+                        <p class="project-description">Interactive visualization of mathematical patterns.</p>
+                    </div>
+                    <div class="project-content">
+                        <canvas id="fractal-canvas" width="300" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Sound Machine</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Web Audio</span>
+                            <span class="project-tag">Interactive</span>
+                        </div>
+                        <p class="project-description">Create music and sounds through an interactive interface.</p>
+                    </div>
+                    <div class="project-content">
+                        <div id="sound-machine" style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: 10px;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 5px; flex: 1;">
+                                <button class="sound-pad" data-note="C4" style="background: #ff0266; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="D4" style="background: #ff6b00; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="E4" style="background: #ffcc00; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="F4" style="background: #33cc33; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="G4" style="background: #03dac6; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="A4" style="background: #0099ff; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="B4" style="background: #6200ee; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="C5" style="background: #9900cc; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="D5" style="background: #ff0099; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="E5" style="background: #ff3333; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="F5" style="background: #ff9900; border: none; border-radius: 4px;"></button>
+                                <button class="sound-pad" data-note="G5" style="background: #cccc00; border: none; border-radius: 4px;"></button>
+                            </div>
+                            <button id="start-synth" style="margin-top: 10px; background-color: var(--secondary); border: none; padding: 5px; border-radius: 4px; color: var(--dark);">Start Synth</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="side-projects">
+            <div class="section-header">
+                <h3>Side Projects</h3>
+                <div class="line"></div>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Mini Arcade Game</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Game</span>
+                            <span class="project-tag">Canvas</span>
+                        </div>
+                        <p class="project-description">A simple but addictive arcade-style game.</p>
+                    </div>
+                    <div class="project-content">
+                        <div class="game-container">
+                            <canvas id="game-canvas" width="300" height="250"></canvas>
+                            <div id="game-ui" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 14px;">Score: 0</div>
+                            <button id="start-game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--secondary); border: none; padding: 8px 16px; border-radius: 4px; color: var(--dark);">Start Game</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Weather Visualizer</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Data Viz</span>
+                            <span class="project-tag">SVG</span>
+                        </div>
+                        <p class="project-description">Artistic visualization of weather patterns.</p>
+                    </div>
+                    <div class="project-content">
+                        <div id="weather-viz" style="width: 100%; height: 100%; position: relative;">
+                            <svg id="weather-svg" width="100%" height="100%" viewBox="0 0 200 200"></svg>
+                            <div style="position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: space-around;">
+                                <button class="weather-btn" data-weather="sunny" style="background: #ffcc00; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;"></button>
+                                <button class="weather-btn" data-weather="rainy" style="background: #0099ff; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;"></button>
+                                <button class="weather-btn" data-weather="stormy" style="background: #6200ee; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;"></button>
+                                <button class="weather-btn" data-weather="snowy" style="background: #f5f5f5; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h4 class="project-title">Maze Generator</h4>
+                        <div class="project-tags">
+                            <span class="project-tag">Algorithms</span>
+                            <span class="project-tag">Puzzle</span>
+                        </div>
+                        <p class="project-description">Generate and solve procedural mazes.</p>
+                    </div>
+                    <div class="project-content">
+                        <canvas id="maze-canvas" width="300" height="250"></canvas>
+                        <button id="generate-maze" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: var(--secondary); border: none; padding: 5px; border-radius: 4px; color: var(--dark);">New Maze</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="contact">
+            <div class="section-header">
+                <h3>Contact</h3>
+                <div class="line"></div>
+            </div>
+            <p>Feel free to reach out if you'd like to collaborate on a project or just chat about creative technology!</p>
+            <div class="social-links">
+                <a href="#" class="social-link">GH</a>
+                <a href="#" class="social-link">TW</a>
+                <a href="#" class="social-link">LI</a>
+                <a href="#" class="social-link">IG</a>
+            </div>
+            <div class="easter-egg" style="bottom: 20px; right: 30px;" data-trigger="konami"></div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2025 John Royce. All rights reserved.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">This portfolio contains several hidden features. Can you find them all?</p>
+        <div class="easter-egg" style="bottom: 20px; left: 30px;" data-trigger="8bit"></div>
+    </footer>
+    
+    <div id="modal-background">
+        <div id="modal-content">
+            <button id="modal-close">×</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let audioContext;
+        let analyzer;
+        let gameInterval;
+        let particles = [];
+        let physicsObjects = [];
+        let gameObjects = {
+            player: { x: 150, y: 200, width: 30, height: 10, speed: 5 },
+            ball: { x: 150, y: 150, radius: 5, dx: 2, dy: -3 },
+            blocks: [],
+            score: 0,
+            gameStarted: false
+        };
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavigation();
+            initPixelCanvas();
+            initProjects();
+            initScrollAnimation();
+            initEasterEggs();
+            initPixelCharacter();
+            initModal();
+        });
+
+        // Navigation and scrolling
+        function initNavigation() {
+            const navButtons = document.querySelectorAll('nav button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    const section = document.getElementById(sectionId);
+                    section.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+
+        function initScrollAnimation() {
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                if (section.id !== 'experiments') { // Experiments is visible by default
+                    observer.observe(section);
+                }
+            });
+        }
+
+        // Header pixel canvas
+        function initPixelCanvas() {
+            const canvas = document.getElementById('pixel-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Create a grid of pixels
+            const pixelSize = 20;
+            const columns = Math.ceil(canvas.width / pixelSize);
+            const rows = Math.ceil(canvas.height / pixelSize);
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < columns; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        // Only draw some pixels
+                        if (Math.random() < 0.03) {
+                            const x = i * pixelSize;
+                            const y = j * pixelSize;
+                            
+                            // Randomly choose color
+                            if (Math.random() < 0.5) {
+                                ctx.fillStyle = 'rgba(3, 218, 198, ' + (Math.random() * 0.5 + 0.1) + ')';
+                            } else {
+                                ctx.fillStyle = 'rgba(255, 2, 102, ' + (Math.random() * 0.5 + 0.1) + ')';
+                            }
+                            
+                            ctx.fillRect(x, y, pixelSize, pixelSize);
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        // Initialize all interactive projects
+        function initProjects() {
+            // Particles
+            initParticles();
+            
+            // Audio Visualizer
+            document.getElementById('start-audio').addEventListener('click', initAudioVisualizer);
+            
+            // Shape Morpher
+            initShapeMorpher();
+            
+            // Color Palette
+            initColorPalette();
+            
+            // Physics
+            initPhysics();
+            
+            // Typographic Animator
+            initTextAnimator();
+            
+            // Generative Art
+            initGenerativeArt();
+            
+            // Fractal Explorer
+            initFractalExplorer();
+            
+            // Sound Machine
+            document.getElementById('start-synth').addEventListener('click', initSoundMachine);
+            
+            // Game
+            document.getElementById('start-game').addEventListener('click', startGame);
+            
+            // Weather Visualizer
+            initWeatherViz();
+            
+            // Maze Generator
+            document.getElementById('generate-maze').addEventListener('click', generateMaze);
+            initMaze();
+        }
+
+        // Particles Project
+        function initParticles() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas to fill container
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Create particles
+            particles = [];
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 3 + 1,
+                    color: `hsl(${Math.random() * 60 + 170}, 100%, 50%)`,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 2 - 1
+                });
+            }
+            
+            // Mouse interaction
+            let mouse = {
+                x: null,
+                y: null,
+                radius: 100
+            };
+            
+            canvas.addEventListener('mousemove', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            
+            canvas.addEventListener('mouseleave', function() {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            // Touch interaction
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.touches[0].clientX - rect.left;
+                mouse.y = e.touches[0].clientY - rect.top;
+            });
+            
+            canvas.addEventListener('touchend', function() {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Update and draw particles
+                particles.forEach(particle => {
+                    // Apply mouse repulsion
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const dx = particle.x - mouse.x;
+                        const dy = particle.y - mouse.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < mouse.radius) {
+                            const force = (mouse.radius - distance) / mouse.radius;
+                            const angle = Math.atan2(dy, dx);
+                            particle.vx += force * Math.cos(angle) * 0.5;
+                            particle.vy += force * Math.sin(angle) * 0.5;
+                        }
+                    }
+                    
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Boundary checks
+                    if (particle.x < 0) {
+                        particle.x = 0;
+                        particle.vx *= -0.5;
+                    } else if (particle.x > canvas.width) {
+                        particle.x = canvas.width;
+                        particle.vx *= -0.5;
+                    }
+                    
+                    if (particle.y < 0) {
+                        particle.y = 0;
+                        particle.vy *= -0.5;
+                    } else if (particle.y > canvas.height) {
+                        particle.y = canvas.height;
+                        particle.vy *= -0.5;
+                    }
+                    
+                    // Apply friction
+                    particle.vx *= 0.98;
+                    particle.vy *= 0.98;
+                    
+                    // Draw the particle
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                });
+                
+                // Connect particles that are close to each other
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 50) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(3, 218, 198, ${(50 - distance) / 50})`;
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        // Audio Visualizer
+        function initAudioVisualizer() {
+            const audioButton = document.getElementById('start-audio');
+            audioButton.style.display = 'none';
+            
+            const canvas = document.getElementById('audio-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Initialize Web Audio API
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create oscillator (for demo purposes)
+                const oscillator = audioContext.createOscillator();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                
+                // Create gain node
+                const gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.1;
+                
+                // Create analyzer
+                analyzer = audioContext.createAnalyser();
+                analyzer.fftSize = 256;
+                const bufferLength = analyzer.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                
+                // Connect nodes
+                oscillator.connect(gainNode);
+                gainNode.connect(analyzer);
+                analyzer.connect(audioContext.destination);
+                
+                // Start oscillator
+                oscillator.start();
+                
+                // Handle visualization
+                function visualize() {
+                    requestAnimationFrame(visualize);
+                    
+                    analyzer.getByteFrequencyData(dataArray);
+                    
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Background gradient
+                    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    gradient.addColorStop(0, 'rgba(3, 218, 198, 0.2)');
+                    gradient.addColorStop(1, 'rgba(255, 2, 102, 0.2)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw frequency bars
+                    const barWidth = (canvas.width / bufferLength) * 2.5;
+                    let x = 0;
+                    
+                    for (let i = 0; i < bufferLength; i++) {
+                        const barHeight = (dataArray[i] / 255) * canvas.height;
+                        
+                        // Color based on frequency
+                        const hue = i / bufferLength * 180 + 170;
+                        ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+                        
+                        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                        
+                        x += barWidth + 1;
+                    }
+                    
+                    // Draw wave form
+                    analyzer.getByteTimeDomainData(dataArray);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.beginPath();
+                    
+                    const sliceWidth = canvas.width / bufferLength;
+                    x = 0;
+                    
+                    for (let i = 0; i < bufferLength; i++) {
+                        const v = dataArray[i] / 128.0;
+                        const y = v * canvas.height / 2;
+                        
+                        if (i === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                        
+                        x += sliceWidth;
+                    }
+                    
+                    ctx.lineTo(canvas.width, canvas.height / 2);
+                    ctx.stroke();
+                }
+                
+                visualize();
+                
+                // Add interaction
+                canvas.addEventListener('click', function(e) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Change oscillator frequency based on click position
+                    const frequency = (x / canvas.width) * 1000 + 100;
+                    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                    
+                    // Change oscillator type based on vertical position
+                    const types = ['sine', 'square', 'sawtooth', 'triangle'];
+                    const typeIndex = Math.floor((y / canvas.height) * types.length);
+                    oscillator.type = types[typeIndex];
+                });
+            }
+        }
+
+        // Shape Morpher
+        function initShapeMorpher() {
+            const svg = document.getElementById('shape-morpher');
+            
+            // Define shapes
+            const shapes = [
+                // Circle
+                'M100,50 a50,50 0 1,0 0,100 a50,50 0 1,0 0,-100',
+                // Square
+                'M50,50 L150,50 L150,150 L50,150 Z',
+                // Triangle
+                'M100,30 L170,150 L30,150 Z',
+                // Star
+                'M100,10 L116,62 L170,62 L127,94 L142,150 L100,120 L58,150 L73,94 L30,62 L84,62 Z',
+                // Hexagon
+                'M150,100 L125,160 L75,160 L50,100 L75,40 L125,40 Z'
+            ];
+            
+            let currentShape = 0;
+            
+            // Create shape element
+            const shapePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            shapePath.setAttribute('d', shapes[currentShape]);
+            shapePath.setAttribute('fill', 'none');
+            shapePath.setAttribute('stroke', '#03dac6');
+            shapePath.setAttribute('stroke-width', '4');
+            svg.appendChild(shapePath);
+            
+            // Function to morph to next shape
+            function morphToNextShape() {
+                currentShape = (currentShape + 1) % shapes.length;
+                
+                // Apply CSS transition for smooth morphing
+                shapePath.style.transition = 'all 1s ease-in-out';
+                shapePath.setAttribute('d', shapes[currentShape]);
+                
+                // Change color
+                const hue = currentShape * 60 + 170;
+                shapePath.setAttribute('stroke', `hsl(${hue}, 100%, 50%)`);
+            }
+            
+            // Start morphing cycle
+            setInterval(morphToNextShape, 3000);
+            
+            // Add interaction
+            svg.addEventListener('click', morphToNextShape);
+        }
+
+        // Color Palette Generator
+        function initColorPalette() {
+            const baseColorInput = document.getElementById('base-color');
+            const paletteContainer = document.getElementById('palette-swatches');
+            
+            function generatePalette() {
+                const baseColor = baseColorInput.value;
+                
+                // Convert hex to HSL for easier manipulation
+                function hexToHSL(hex) {
+                    // Remove the # if present
+                    hex = hex.replace(/^#/, '');
+                    
+                    // Parse the hex values
+                    let r = parseInt(hex.substring(0, 2), 16) / 255;
+                    let g = parseInt(hex.substring(2, 4), 16) / 255;
+                    let b = parseInt(hex.substring(4, 6), 16) / 255;
+                    
+                    // Find the min and max values
+                    const max = Math.max(r, g, b);
+                    const min = Math.min(r, g, b);
+                    
+                    let h, s, l = (max + min) / 2;
+                    
+                    if (max === min) {
+                        h = s = 0; // achromatic
+                    } else {
+                        const d = max - min;
+                        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                        
+                        switch (max) {
+                            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                            case g: h = (b - r) / d + 2; break;
+                            case b: h = (r - g) / d + 4; break;
+                        }
+                        
+                        h /= 6;
+                    }
+                    
+                    return [h * 360, s * 100, l * 100];
+                }
+                
+                // Convert HSL to hex
+                function hslToHex(h, s, l) {
+                    h /= 360;
+                    s /= 100;
+                    l /= 100;
+                    
+                    let r, g, b;
+                    
+                    if (s === 0) {
+                        r = g = b = l; // achromatic
+                    } else {
+                        const hue2rgb = (p, q, t) => {
+                            if (t < 0) t += 1;
+                            if (t > 1) t -= 1;
+                            if (t < 1/6) return p + (q - p) * 6 * t;
+                            if (t < 1/2) return q;
+                            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                            return p;
+                        };
+                        
+                        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                        const p = 2 * l - q;
+                        
+                        r = hue2rgb(p, q, h + 1/3);
+                        g = hue2rgb(p, q, h);
+                        b = hue2rgb(p, q, h - 1/3);
+                    }
+                    
+                    const toHex = x => {
+                        const hex = Math.round(x * 255).toString(16);
+                        return hex.length === 1 ? '0' + hex : hex;
+                    };
+                    
+                    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+                }
+                
+                // Generate palette colors
+                const [h, s, l] = hexToHSL(baseColor);
+                
+                // Clear existing swatches
+                paletteContainer.innerHTML = '';
+                
+                // Create color schemes
+                const schemes = [
+                    // Analogous
+                    [
+                        hslToHex((h - 30 + 360) % 360, s, l),
+                        baseColor,
+                        hslToHex((h + 30) % 360, s, l)
+                    ],
+                    // Monochromatic
+                    [
+                        hslToHex(h, s, Math.max(0, l - 30)),
+                        baseColor,
+                        hslToHex(h, s, Math.min(100, l + 30))
+                    ],
+                    // Complementary
+                    [
+                        baseColor,
+                        hslToHex((h + 180) % 360, s, l)
+                    ]
+                ];
+                
+                // Create color swatches
+                schemes.flat().forEach(color => {
+                    const swatch = document.createElement('div');
+                    swatch.style.backgroundColor = color;
+                    swatch.style.position = 'relative';
+                    swatch.title = color;
+                    
+                    // Add color value text
+                    const colorText = document.createElement('div');
+                    colorText.textContent = color;
+                    colorText.style.position = 'absolute';
+                    colorText.style.bottom = '5px';
+                    colorText.style.left = '5px';
+                    colorText.style.fontSize = '10px';
+                    colorText.style.color = l > 50 ? '#000' : '#fff';
+                    
+                    swatch.appendChild(colorText);
+                    paletteContainer.appendChild(swatch);
+                    
+                    // Add click to copy
+                    swatch.addEventListener('click', function() {
+                        navigator.clipboard.writeText(color).then(() => {
+                            colorText.textContent = 'Copied!';
+                            setTimeout(() => {
+                                colorText.textContent = color;
+                            }, 1000);
+                        });
+                    });
+                });
+            }
+            
+            // Generate initial palette
+            generatePalette();
+            
+            // Update on color change
+            baseColorInput.addEventListener('input', generatePalette);
+        }
+
+        // Physics Playground
+        function initPhysics() {
+            const canvas = document.getElementById('physics-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Physics constants
+            const gravity = 0.2;
+            const friction = 0.99;
+            const bounce = 0.8;
+            
+            // Create initial objects
+            physicsObjects = [];
+            
+            // Add some balls
+            for (let i = 0; i < 15; i++) {
+                physicsObjects.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height / 2,
+                    radius: Math.random() * 10 + 5,
+                    vx: Math.random() * 4 - 2,
+                    vy: 0,
+                    color: `hsl(${Math.random() * 60 + 170}, 100%, 50%)`
+                });
+            }
+            
+            // Mouse interaction
+            let mouseDown = false;
+            let selectedObject = null;
+            let dragStartX, dragStartY;
+            
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                mouseDown = true;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                
+                // Check if an object was clicked
+                for (let i = physicsObjects.length - 1; i >= 0; i--) {
+                    const obj = physicsObjects[i];
+                    const dx = mouseX - obj.x;
+                    const dy = mouseY - obj.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < obj.radius) {
+                        selectedObject = obj;
+                        obj.vx = 0;
+                        obj.vy = 0;
+                        break;
+                    }
+                }
+                
+                // If no object was clicked, create a new one
+                if (!selectedObject) {
+                    const newBall = {
+                        x: mouseX,
+                        y: mouseY,
+                        radius: Math.random() * 10 + 10,
+                        vx: 0,
+                        vy: 0,
+                        color: `hsl(${Math.random() * 60 + 170}, 100%, 50%)`
+                    };
+                    
+                    physicsObjects.push(newBall);
+                    selectedObject = newBall;
+                }
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (mouseDown && selectedObject) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    selectedObject.x = mouseX;
+                    selectedObject.y = mouseY;
+                }
+            });
+            
+            canvas.addEventListener('mouseup', function(e) {
+                if (selectedObject) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // Set velocity based on drag direction and length
+                    selectedObject.vx = (selectedObject.x - dragStartX) * 0.1;
+                    selectedObject.vy = (selectedObject.y - dragStartY) * 0.1;
+                }
+                
+                mouseDown = false;
+                selectedObject = null;
+            });
+            
+            // Touch events
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                const touchX = e.touches[0].clientX - rect.left;
+                const touchY = e.touches[0].clientY - rect.top;
+                
+                mouseDown = true;
+                dragStartX = touchX;
+                dragStartY = touchY;
+                
+                // Check if an object was touched
+                for (let i = physicsObjects.length - 1; i >= 0; i--) {
+                    const obj = physicsObjects[i];
+                    const dx = touchX - obj.x;
+                    const dy = touchY - obj.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < obj.radius) {
+                        selectedObject = obj;
+                        obj.vx = 0;
+                        obj.vy = 0;
+                        break;
+                    }
+                }
+                
+                // If no object was touched, create a new one
+                if (!selectedObject) {
+                    const newBall = {
+                        x: touchX,
+                        y: touchY,
+                        radius: Math.random() * 10 + 10,
+                        vx: 0,
+                        vy: 0,
+                        color: `hsl(${Math.random() * 60 + 170}, 100%, 50%)`
+                    };
+                    
+                    physicsObjects.push(newBall);
+                    selectedObject = newBall;
+                }
+            });
+            
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (mouseDown && selectedObject) {
+                    const rect = canvas.getBoundingClientRect();
+                    const touchX = e.touches[0].clientX - rect.left;
+                    const touchY = e.touches[0].clientY - rect.top;
+                    
+                    selectedObject.x = touchX;
+                    selectedObject.y = touchY;
+                }
+            });
+            
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                if (selectedObject) {
+                    // Set velocity based on drag direction and length
+                    selectedObject.vx = (selectedObject.x - dragStartX) * 0.1;
+                    selectedObject.vy = (selectedObject.y - dragStartY) * 0.1;
+                }
+                
+                mouseDown = false;
+                selectedObject = null;
+            });
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Update and draw objects
+                physicsObjects.forEach(obj => {
+                    if (obj !== selectedObject) {
+                        // Apply gravity
+                        obj.vy += gravity;
+                        
+                        // Apply friction
+                        obj.vx *= friction;
+                        obj.vy *= friction;
+                        
+                        // Update position
+                        obj.x += obj.vx;
+                        obj.y += obj.vy;
+                        
+                        // Boundary checks
+                        if (obj.x - obj.radius < 0) {
+                            obj.x = obj.radius;
+                            obj.vx *= -bounce;
+                        } else if (obj.x + obj.radius > canvas.width) {
+                            obj.x = canvas.width - obj.radius;
+                            obj.vx *= -bounce;
+                        }
+                        
+                        if (obj.y - obj.radius < 0) {
+                            obj.y = obj.radius;
+                            obj.vy *= -bounce;
+                        } else if (obj.y + obj.radius > canvas.height) {
+                            obj.y = canvas.height - obj.radius;
+                            obj.vy *= -bounce;
+                        }
+                        
+                        // Collision with other objects
+                        for (let i = 0; i < physicsObjects.length; i++) {
+                            const other = physicsObjects[i];
+                            
+                            if (obj !== other) {
+                                const dx = obj.x - other.x;
+                                const dy = obj.y - other.y;
+                                const distance = Math.sqrt(dx * dx + dy * dy);
+                                const minDistance = obj.radius + other.radius;
+                                
+                                if (distance < minDistance) {
+                                    // Calculate collision response
+                                    const angle = Math.atan2(dy, dx);
+                                    const targetX = other.x + Math.cos(angle) * minDistance;
+                                    const targetY = other.y + Math.sin(angle) * minDistance;
+                                    const ax = (targetX - obj.x) * 0.05;
+                                    const ay = (targetY - obj.y) * 0.05;
+                                    
+                                    obj.vx -= ax;
+                                    obj.vy -= ay;
+                                    other.vx += ax;
+                                    other.vy += ay;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Draw the object
+                    ctx.beginPath();
+                    ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = obj.color;
+                    ctx.fill();
+                    
+                    // Add highlight
+                    ctx.beginPath();
+                    ctx.arc(obj.x - obj.radius * 0.3, obj.y - obj.radius * 0.3, obj.radius * 0.2, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
+                    
+                    // Draw shadow
+                    ctx.beginPath();
+                    ctx.ellipse(obj.x, canvas.height - 2, obj.radius * 1.2, obj.radius * 0.3, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                    ctx.fill();
+                });
+                
+                // Draw direction line if dragging
+                if (mouseDown && selectedObject) {
+                    ctx.beginPath();
+                    ctx.moveTo(dragStartX, dragStartY);
+                    ctx.lineTo(selectedObject.x, selectedObject.y);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        // Text Animator
+        function initTextAnimator() {
+            const textElement = document.getElementById('animated-text');
+            const container = document.getElementById('text-animator');
+            
+            // Animation effects
+            const effects = [
+                // Glitch effect
+                function glitchEffect() {
+                    textElement.style.animation = 'none';
+                    textElement.style.color = 'var(--secondary)';
+                    textElement.style.textShadow = '2px 2px 0 var(--accent), -2px -2px 0 var(--primary)';
+                    
+                    let glitchInterval = setInterval(() => {
+                        textElement.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px) skew(${Math.random() * 4 - 2}deg)`;
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        clearInterval(glitchInterval);
+                        textElement.style.transform = 'none';
+                    }, 2000);
+                },
+                
+                // Wave effect
+                function waveEffect() {
+                    textElement.style.animation = 'none';
+                    textElement.style.color = 'var(--primary)';
+                    textElement.style.textShadow = '0 0 10px var(--secondary)';
+                    
+                    const text = textElement.textContent;
+                    let html = '';
+                    
+                    for (let i = 0; i < text.length; i++) {
+                        html += `<span style="animation: wave 1s ease-in-out ${i * 0.05}s infinite alternate">${text[i]}</span>`;
+                    }
+                    
+                    textElement.innerHTML = html;
+                    
+                    // Add wave keyframes
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes wave {
+                            0% { transform: translateY(0); }
+                            100% { transform: translateY(-10px); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                },
+                
+                // Typewriter effect
+                function typewriterEffect() {
+                    const text = textElement.textContent;
+                    textElement.textContent = '';
+                    textElement.style.animation = 'none';
+                    textElement.style.color = 'var(--light)';
+                    textElement.style.textShadow = 'none';
+                    
+                    let i = 0;
+                    const typeInterval = setInterval(() => {
+                        if (i < text.length) {
+                            textElement.textContent += text.charAt(i);
+                            i++;
+                        } else {
+                            clearInterval(typeInterval);
+                        }
+                    }, 100);
+                },
+                
+                // Neon glow effect
+                function neonEffect() {
+                    textElement.style.animation = 'none';
+                    textElement.style.color = 'var(--light)';
+                    textElement.style.textShadow = `
+                        0 0 5px var(--light),
+                        0 0 10px var(--light),
+                        0 0 15px var(--secondary),
+                        0 0 20px var(--secondary),
+                        0 0 30px var(--secondary),
+                        0 0 40px var(--secondary)
+                    `;
+                    
+                    // Add neon flicker
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes flicker {
+                            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                                opacity: 1;
+                            }
+                            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                                opacity: 0.8;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    textElement.style.animation = 'flicker 2s linear infinite';
+                },
+                
+                // Bounce effect
+                function bounceEffect() {
+                    textElement.style.animation = 'none';
+                    textElement.style.color = 'var(--accent)';
+                    textElement.style.textShadow = '2px 2px 0 var(--primary)';
+                    
+                    const text = textElement.textContent;
+                    let html = '';
+                    
+                    for (let i = 0; i < text.length; i++) {
+                        html += `<span style="display: inline-block; animation: bounce 0.6s ease ${i * 0.1}s infinite alternate">${text[i]}</span>`;
+                    }
+                    
+                    textElement.innerHTML = html;
+                    
+                    // Add bounce keyframes
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes bounce {
+                            0% { transform: translateY(0); }
+                            100% { transform: translateY(-15px); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            ];
+            
+            // Apply random effect every 4 seconds
+            function applyRandomEffect() {
+                const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+                randomEffect();
+            }
+            
+            // Start with initial effect
+            applyRandomEffect();
+            
+            // Change effect on click
+            container.addEventListener('click', applyRandomEffect);
+            
+            // Allow text input
+            container.addEventListener('dblclick', function() {
+                const newText = prompt('Enter text to animate:', textElement.textContent);
+                if (newText && newText.trim() !== '') {
+                    textElement.textContent = newText;
+                    applyRandomEffect();
+                }
+            });
+            
+            // Change effect periodically
+            setInterval(applyRandomEffect, 5000);
+        }
+
+        // Generative Art
+        function initGenerativeArt() {
+            const canvas = document.getElementById('generative-art');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                generateArt();
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Generate art function
+            function generateArt() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Choose a random generation method
+                const methods = [
+                    generateCircles,
+                    generateLines,
+                    generateFlowField,
+                    generateTriangles,
+                    generateRecursivePatterns
+                ];
+                
+                const randomMethod = methods[Math.floor(Math.random() * methods.length)];
+                randomMethod();
+            }
+            
+            // Generation methods
+            function generateCircles() {
+                // Background
+                ctx.fillStyle = '#121212';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw overlapping circles
+                for (let i = 0; i < 100; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const radius = Math.random() * 50 + 10;
+                    
+                    const hue = Math.random() * 60 + 170;
+                    ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.1)`;
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 70%, 0.3)`;
+                    ctx.lineWidth = 1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+            
+            function generateLines() {
+                // Background
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#121212');
+                gradient.addColorStop(1, '#1a1a1a');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw lines
+                const lines = Math.floor(Math.random() * 50) + 50;
+                
+                for (let i = 0; i < lines; i++) {
+                    const x1 = Math.random() * canvas.width;
+                    const y1 = Math.random() * canvas.height;
+                    const x2 = Math.random() * canvas.width;
+                    const y2 = Math.random() * canvas.height;
+                    
+                    const hue = Math.random() * 60 + 170;
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 50%, 0.2)`;
+                    ctx.lineWidth = Math.random() * 2 + 0.5;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    
+                    // Add curve
+                    const cp1x = (x1 + x2) / 2 + (Math.random() * 100 - 50);
+                    const cp1y = (y1 + y2) / 2 + (Math.random() * 100 - 50);
+                    
+                    ctx.quadraticCurveTo(cp1x, cp1y, x2, y2);
+                    ctx.stroke();
+                }
+            }
+            
+            function generateFlowField() {
+                // Background
+                ctx.fillStyle = '#121212';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Parameters
+                const resolution = 20;
+                const cols = Math.floor(canvas.width / resolution);
+                const rows = Math.floor(canvas.height / resolution);
+                const particleCount = 200;
+                const noiseScale = 0.01;
+                const particles = [];
+                
+                // Create particles
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        color: `hsla(${Math.random() * 60 + 170}, 100%, 50%, 0.1)`,
+                        size: Math.random() * 3 + 1
+                    });
+                }
+                
+                // Generate simple noise function
+                function noise(x, y) {
+                    return Math.sin(x * noiseScale) * Math.cos(y * noiseScale) * Math.PI * 2;
+                }
+                
+                // Draw flow field
+                for (let i = 0; i < 100; i++) {
+                    particles.forEach(particle => {
+                        // Get angle from noise
+                        const angle = noise(particle.x, particle.y);
+                        
+                        // Calculate velocity
+                        const vx = Math.cos(angle);
+                        const vy = Math.sin(angle);
+                        
+                        // Update position
+                        particle.x += vx * 2;
+                        particle.y += vy * 2;
+                        
+                        // Draw particle
+                        ctx.fillStyle = particle.color;
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Reset if out of bounds
+                        if (particle.x < 0 || particle.x > canvas.width || 
+                            particle.y < 0 || particle.y > canvas.height) {
+                            particle.x = Math.random() * canvas.width;
+                            particle.y = Math.random() * canvas.height;
+                        }
+                    });
+                }
+            }
+            
+            function generateTriangles() {
+                // Background
+                ctx.fillStyle = '#121212';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw triangles
+                const triangleCount = Math.floor(Math.random() * 30) + 20;
+                
+                for (let i = 0; i < triangleCount; i++) {
+                    const x1 = Math.random() * canvas.width;
+                    const y1 = Math.random() * canvas.height;
+                    const x2 = x1 + (Math.random() * 100 - 50);
+                    const y2 = y1 + (Math.random() * 100 - 50);
+                    const x3 = x1 + (Math.random() * 100 - 50);
+                    const y3 = y1 + (Math.random() * 100 - 50);
+                    
+                    const hue = Math.random() * 60 + 170;
+                    ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.1)`;
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 70%, 0.5)`;
+                    ctx.lineWidth = 1;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.lineTo(x3, y3);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+            
+            function generateRecursivePatterns() {
+                // Background
+                ctx.fillStyle = '#121212';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw recursive circles
+                function drawCircle(x, y, radius, depth) {
+                    if (radius < 2 || depth > 7) return;
+                    
+                    const hue = (170 + depth * 10) % 360;
+                    ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.1)`;
+                    ctx.strokeStyle = `hsla(${hue}, 100%, 70%, 0.3)`;
+                    ctx.lineWidth = 1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Recursive calls
+                    const newRadius = radius * 0.6;
+                    const branchCount = Math.floor(Math.random() * 3) + 2;
+                    
+                    for (let i = 0; i < branchCount; i++) {
+                        const angle = (i / branchCount) * Math.PI * 2;
+                        const newX = x + Math.cos(angle) * radius * 0.8;
+                        const newY = y + Math.sin(angle) * radius * 0.8;
+                        drawCircle(newX, newY, newRadius, depth + 1);
+                    }
+                }
+                
+                // Start the recursion with a central circle
+                drawCircle(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.3, 0);
+            }
+            
+            // Generate initial art
+            generateArt();
+            
+            // Regenerate on click
+            canvas.addEventListener('click', generateArt);
+        }
+
+        // Fractal Explorer
+        function initFractalExplorer() {
+            const canvas = document.getElementById('fractal-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                drawFractal();
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Fractal parameters
+            let fractalParams = {
+                type: 'mandelbrot', // mandelbrot, julia, burningShip
+                centerX: -0.5,
+                centerY: 0,
+                zoom: 1.5,
+                maxIterations: 100,
+                juliaX: -0.7,
+                juliaY: 0.27
+            };
+            
+            // Draw fractal
+            function drawFractal() {
+                const { width, height } = canvas;
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data;
+                
+                // Map pixel to complex plane
+                function mapToComplex(x, y) {
+                    const aspectRatio = width / height;
+                    const size = 2 / fractalParams.zoom;
+                    
+                    let realPart, imagPart;
+                    
+                    if (width > height) {
+                        realPart = fractalParams.centerX + (x / width - 0.5) * size * aspectRatio;
+                        imagPart = fractalParams.centerY + (y / height - 0.5) * size;
+                    } else {
+                        realPart = fractalParams.centerX + (x / width - 0.5) * size;
+                        imagPart = fractalParams.centerY + (y / height - 0.5) * size / aspectRatio;
+                    }
+                    
+                    return { real: realPart, imag: imagPart };
+                }
+                
+                // Calculate iterations for Mandelbrot set
+                function mandelbrotIterations(c_real, c_imag) {
+                    let z_real = 0;
+                    let z_imag = 0;
+                    let iteration = 0;
+                    
+                    while (z_real * z_real + z_imag * z_imag < 4 && iteration < fractalParams.maxIterations) {
+                        const temp_real = z_real * z_real - z_imag * z_imag + c_real;
+                        const temp_imag = 2 * z_real * z_imag + c_imag;
+                        
+                        z_real = temp_real;
+                        z_imag = temp_imag;
+                        iteration++;
+                    }
+                    
+                    return iteration;
+                }
+                
+                // Calculate iterations for Julia set
+                function juliaIterations(z_real, z_imag) {
+                    let iteration = 0;
+                    
+                    while (z_real * z_real + z_imag * z_imag < 4 && iteration < fractalParams.maxIterations) {
+                        const temp_real = z_real * z_real - z_imag * z_imag + fractalParams.juliaX;
+                        const temp_imag = 2 * z_real * z_imag + fractalParams.juliaY;
+                        
+                        z_real = temp_real;
+                        z_imag = temp_imag;
+                        iteration++;
+                    }
+                    
+                    return iteration;
+                }
+                
+                // Calculate iterations for Burning Ship fractal
+                function burningShipIterations(c_real, c_imag) {
+                    let z_real = 0;
+                    let z_imag = 0;
+                    let iteration = 0;
+                    
+                    while (z_real * z_real + z_imag * z_imag < 4 && iteration < fractalParams.maxIterations) {
+                        z_real = Math.abs(z_real);
+                        z_imag = Math.abs(z_imag);
+                        
+                        const temp_real = z_real * z_real - z_imag * z_imag + c_real;
+                        const temp_imag = 2 * z_real * z_imag + c_imag;
+                        
+                        z_real = temp_real;
+                        z_imag = temp_imag;
+                        iteration++;
+                    }
+                    
+                    return iteration;
+                }
+                
+                // Iterate through all pixels
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const complex = mapToComplex(x, y);
+                        let iterations;
+                        
+                        switch (fractalParams.type) {
+                            case 'mandelbrot':
+                                iterations = mandelbrotIterations(complex.real, complex.imag);
+                                break;
+                            case 'julia':
+                                iterations = juliaIterations(complex.real, complex.imag);
+                                break;
+                            case 'burningShip':
+                                iterations = burningShipIterations(complex.real, complex.imag);
+                                break;
+                        }
+                        
+                        // Color based on iterations
+                        const i = (y * width + x) * 4;
+                        
+                        if (iterations === fractalParams.maxIterations) {
+                            // In set (black)
+                            data[i] = 0;
+                            data[i + 1] = 0;
+                            data[i + 2] = 0;
+                            data[i + 3] = 255;
+                        } else {
+                            // Outside set (colored)
+                            const hue = (iterations / fractalParams.maxIterations * 360 + 170) % 360;
+                            const lightness = 50;
+                            const saturation = 100;
+                            
+                            // Convert HSL to RGB
+                            const c = (1 - Math.abs(2 * lightness / 100 - 1)) * saturation / 100;
+                            const x = c * (1 - Math.abs((hue / 60) % 2 - 1));
+                            const m = lightness / 100 - c / 2;
+                            
+                            let r, g, b;
+                            
+                            if (hue < 60) {
+                                r = c; g = x; b = 0;
+                            } else if (hue < 120) {
+                                r = x; g = c; b = 0;
+                            } else if (hue < 180) {
+                                r = 0; g = c; b = x;
+                            } else if (hue < 240) {
+                                r = 0; g = x; b = c;
+                            } else if (hue < 300) {
+                                r = x; g = 0; b = c;
+                            } else {
+                                r = c; g = 0; b = x;
+                            }
+                            
+                            data[i] = Math.round((r + m) * 255);
+                            data[i + 1] = Math.round((g + m) * 255);
+                            data[i + 2] = Math.round((b + m) * 255);
+                            data[i + 3] = 255;
+                        }
+                    }
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+            }
+            
+            // Draw initial fractal
+            drawFractal();
+            
+            // Interaction
+            let isDragging = false;
+            let lastX, lastY;
+            
+            canvas.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Calculate movement in complex plane
+                    const dx = (lastX - x) / canvas.width * 4 / fractalParams.zoom;
+                    const dy = (lastY - y) / canvas.height * 4 / fractalParams.zoom;
+                    
+                    fractalParams.centerX += dx;
+                    fractalParams.centerY += dy;
+                    
+                    lastX = x;
+                    lastY = y;
+                    
+                    drawFractal();
+                }
+            });
+            
+            canvas.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            canvas.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                
+                // Zoom in/out
+                const zoomFactor = e.deltaY > 0 ? 0.8 : 1.2;
+                fractalParams.zoom *= zoomFactor;
+                
+                drawFractal();
+            });
+            
+            // Double click to change fractal type
+            canvas.addEventListener('dblclick', function() {
+                // Cycle through fractal types
+                switch (fractalParams.type) {
+                    case 'mandelbrot':
+                        fractalParams.type = 'julia';
+                        fractalParams.centerX = 0;
+                        fractalParams.centerY = 0;
+                        fractalParams.zoom = 1;
+                        break;
+                    case 'julia':
+                        fractalParams.type = 'burningShip';
+                        fractalParams.centerX = -0.25;
+                        fractalParams.centerY = -0.4;
+                        fractalParams.zoom = 0.8;
+                        break;
+                    case 'burningShip':
+                        fractalParams.type = 'mandelbrot';
+                        fractalParams.centerX = -0.5;
+                        fractalParams.centerY = 0;
+                        fractalParams.zoom = 1.5;
+                        break;
+                }
+                
+                drawFractal();
+            });
+            
+            // Touch events
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                isDragging = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.touches[0].clientX - rect.left;
+                lastY = e.touches[0].clientY - rect.top;
+            });
+            
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (isDragging) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.touches[0].clientX - rect.left;
+                    const y = e.touches[0].clientY - rect.top;
+                    
+                    // Calculate movement in complex plane
+                    const dx = (lastX - x) / canvas.width * 4 / fractalParams.zoom;
+                    const dy = (lastY - y) / canvas.height * 4 / fractalParams.zoom;
+                    
+                    fractalParams.centerX += dx;
+                    fractalParams.centerY += dy;
+                    
+                    lastX = x;
+                    lastY = y;
+                    
+                    drawFractal();
+                }
+            });
+            
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                isDragging = false;
+            });
+        }
+
+        // Sound Machine
+        function initSoundMachine() {
+            // Initialize audio context if not already done
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // Hide start button
+            document.getElementById('start-synth').style.display = 'none';
+            
+            // Define notes frequencies (A4 = 440Hz)
+            const noteFrequencies = {
+                'C4': 261.63,
+                'D4': 293.66,
+                'E4': 329.63,
+                'F4': 349.23,
+                'G4': 392.00,
+                'A4': 440.00,
+                'B4': 493.88,
+                'C5': 523.25,
+                'D5': 587.33,
+                'E5': 659.25,
+                'F5': 698.46,
+                'G5': 783.99
+            };
+            
+            // Function to play a note
+            function playNote(note) {
+                const frequency = noteFrequencies[note];
+                
+                // Create oscillator
+                const oscillator = audioContext.createOscillator();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                
+                // Create gain node for envelope
+                const gainNode = audioContext.createGain();
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+                
+                // Connect nodes
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Start and stop oscillator
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 1);
+                
+                // Visual feedback
+                const pad = document.querySelector(`.sound-pad[data-note="${note}"]`);
+                pad.style.transform = 'scale(0.95)';
+                pad.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.5)';
+                
+                setTimeout(() => {
+                    pad.style.transform = 'scale(1)';
+                    pad.style.boxShadow = 'none';
+                }, 200);
+            }
+            
+            // Add event listeners to pads
+            const soundPads = document.querySelectorAll('.sound-pad');
+            
+            soundPads.forEach(pad => {
+                const note = pad.getAttribute('data-note');
+                
+                // Mouse events
+                pad.addEventListener('click', () => {
+                    playNote(note);
+                });
+                
+                // Touch events
+                pad.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    playNote(note);
+                });
+                
+                // Keyboard events (for demo)
+                const keyMap = {
+                    'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4',
+                    'g': 'G4', 'h': 'A4', 'j': 'B4', 'k': 'C5',
+                    'l': 'D5', ';': 'E5', "'": 'F5', '\\': 'G5'
+                };
+                
+                document.addEventListener('keydown', (e) => {
+                    if (keyMap[e.key] === note) {
+                        playNote(note);
+                    }
+                });
+            });
+        }
+
+        // Mini Arcade Game
+        function startGame() {
+            // Hide start button
+            document.getElementById('start-game').style.display = 'none';
+            
+            // Get canvas and context
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            
+            resizeCanvas();
+            
+            // Initialize game objects
+            gameObjects.player.x = canvas.width / 2 - gameObjects.player.width / 2;
+            gameObjects.player.y = canvas.height - 30;
+            
+            gameObjects.ball.x = canvas.width / 2;
+            gameObjects.ball.y = canvas.height / 2;
+            gameObjects.ball.dx = 2;
+            gameObjects.ball.dy = -3;
+            
+            gameObjects.blocks = [];
+            gameObjects.score = 0;
+            gameObjects.gameStarted = true;
+            
+            // Create blocks
+            const blockRows = 4;
+            const blockCols = 8;
+            const blockWidth = canvas.width / blockCols;
+            const blockHeight = 20;
+            const blockPadding = 5;
+            
+            for (let r = 0; r < blockRows; r++) {
+                for (let c = 0; c < blockCols; c++) {
+                    const blockX = c * blockWidth;
+                    const blockY = r * (blockHeight + blockPadding) + 30;
+                    
+                    gameObjects.blocks.push({
+                        x: blockX,
+                        y: blockY,
+                        width: blockWidth - blockPadding,
+                        height: blockHeight,
+                        color: `hsl(${(r * 60 + c * 10 + 170) % 360}, 100%, 50%)`
+                    });
+                }
+            }
+            
+            // Update UI
+            document.getElementById('game-ui').textContent = `Score: ${gameObjects.score}`;
+            
+            // Controls
+            let leftPressed = false;
+            let rightPressed = false;
+            
+            // Keyboard controls
+            function keyDownHandler(e) {
+                if (e.key === 'Right' || e.key === 'ArrowRight') {
+                    rightPressed = true;
+                } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+                    leftPressed = true;
+                }
+            }
+            
+            function keyUpHandler(e) {
+                if (e.key === 'Right' || e.key === 'ArrowRight') {
+                    rightPressed = false;
+                } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+                    leftPressed = false;
+                }
+            }
+            
+            document.addEventListener('keydown', keyDownHandler);
+            document.addEventListener('keyup', keyUpHandler);
+            
+            // Mouse/touch controls
+            let mouseX = 0;
+            let isTouching = false;
+            
+            function mouseMoveHandler(e) {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+            }
+            
+            function touchMoveHandler(e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.touches[0].clientX - rect.left;
+                isTouching = true;
+            }
+            
+            function touchEndHandler() {
+                isTouching = false;
+            }
+            
+            canvas.addEventListener('mousemove', mouseMoveHandler);
+            canvas.addEventListener('touchmove', touchMoveHandler);
+            canvas.addEventListener('touchend', touchEndHandler);
+            
+            // Game loop
+            function updateGame() {
+                if (!gameObjects.gameStarted) return;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Update player position
+                if (rightPressed && gameObjects.player.x < canvas.width - gameObjects.player.width) {
+                    gameObjects.player.x += gameObjects.player.speed;
+                } else if (leftPressed && gameObjects.player.x > 0) {
+                    gameObjects.player.x -= gameObjects.player.speed;
+                }
+                
+                // Mouse/touch control
+                if (isTouching || mouseX > 0) {
+                    gameObjects.player.x = mouseX - gameObjects.player.width / 2;
+                    
+                    // Keep paddle within canvas
+                    if (gameObjects.player.x < 0) {
+                        gameObjects.player.x = 0;
+                    } else if (gameObjects.player.x > canvas.width - gameObjects.player.width) {
+                        gameObjects.player.x = canvas.width - gameObjects.player.width;
+                    }
+                }
+                
+                // Update ball position
+                gameObjects.ball.x += gameObjects.ball.dx;
+                gameObjects.ball.y += gameObjects.ball.dy;
+                
+                // Ball-wall collisions
+                if (gameObjects.ball.x + gameObjects.ball.radius > canvas.width || 
+                    gameObjects.ball.x - gameObjects.ball.radius < 0) {
+                    gameObjects.ball.dx = -gameObjects.ball.dx;
+                }
+                
+                if (gameObjects.ball.y - gameObjects.ball.radius < 0) {
+                    gameObjects.ball.dy = -gameObjects.ball.dy;
+                }
+                
+                // Ball-paddle collision
+                if (gameObjects.ball.y + gameObjects.ball.radius > gameObjects.player.y &&
+                    gameObjects.ball.x > gameObjects.player.x && 
+                    gameObjects.ball.x < gameObjects.player.x + gameObjects.player.width) {
+                    
+                    // Calculate bounce angle based on where the ball hits the paddle
+                    const hitPos = (gameObjects.ball.x - (gameObjects.player.x + gameObjects.player.width / 2)) / (gameObjects.player.width / 2);
+                    const bounceAngle = hitPos * Math.PI / 3; // Max angle: 60 degrees
+                    
+                    const speed = Math.sqrt(gameObjects.ball.dx * gameObjects.ball.dx + gameObjects.ball.dy * gameObjects.ball.dy);
+                    gameObjects.ball.dx = speed * Math.sin(bounceAngle);
+                    gameObjects.ball.dy = -speed * Math.cos(bounceAngle);
+                }
+                
+                // Ball out of bounds
+                if (gameObjects.ball.y + gameObjects.ball.radius > canvas.height) {
+                    // Game over
+                    document.getElementById('start-game').style.display = 'block';
+                    document.getElementById('start-game').textContent = 'Play Again';
+                    gameObjects.gameStarted = false;
+                    return;
+                }
+                
+                // Ball-block collisions
+                for (let i = 0; i < gameObjects.blocks.length; i++) {
+                    const block = gameObjects.blocks[i];
+                    
+                    if (gameObjects.ball.x > block.x && 
+                        gameObjects.ball.x < block.x + block.width &&
+                        gameObjects.ball.y > block.y && 
+                        gameObjects.ball.y < block.y + block.height) {
+                        
+                        gameObjects.ball.dy = -gameObjects.ball.dy;
+                        gameObjects.blocks.splice(i, 1);
+                        gameObjects.score += 10;
+                        document.getElementById('game-ui').textContent = `Score: ${gameObjects.score}`;
+                        
+                        // Increase ball speed slightly
+                        const speedMultiplier = 1.05;
+                        gameObjects.ball.dx *= speedMultiplier;
+                        gameObjects.ball.dy *= speedMultiplier;
+                        
+                        break;
+                    }
+                }
+                
+                // Win condition
+                if (gameObjects.blocks.length === 0) {
+                    document.getElementById('game-ui').textContent = `You Win! Score: ${gameObjects.score}`;
+                    document.getElementById('start-game').style.display = 'block';
+                    document.getElementById('start-game').textContent = 'Play Again';
+                    gameObjects.gameStarted = false;
+                    return;
+                }
+                
+                // Draw game objects
+                
+                // Draw blocks
+                gameObjects.blocks.forEach(block => {
+                    ctx.fillStyle = block.color;
+                    ctx.fillRect(block.x, block.y, block.width, block.height);
+                    
+                    // Add highlight
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.fillRect(block.x, block.y, block.width, block.height / 3);
+                });
+                
+                // Draw paddle
+                ctx.fillStyle = '#03dac6';
+                ctx.fillRect(gameObjects.player.x, gameObjects.player.y, gameObjects.player.width, gameObjects.player.height);
+                
+                // Add paddle highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fillRect(gameObjects.player.x, gameObjects.player.y, gameObjects.player.width, gameObjects.player.height / 2);
+                
+                // Draw ball
+                ctx.beginPath();
+                ctx.arc(gameObjects.ball.x, gameObjects.ball.y, gameObjects.ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff0266';
+                ctx.fill();
+                ctx.closePath();
+                
+                // Add ball highlight
+                ctx.beginPath();
+                ctx.arc(gameObjects.ball.x - gameObjects.ball.radius * 0.3, gameObjects.ball.y - gameObjects.ball.radius * 0.3, gameObjects.ball.radius * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fill();
+                ctx.closePath();
+                
+                // Ball trail effect
+                ctx.beginPath();
+                ctx.arc(gameObjects.ball.x - gameObjects.ball.dx, gameObjects.ball.y - gameObjects.ball.dy, gameObjects.ball.radius * 0.7, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 2, 102, 0.3)';
+                ctx.fill();
+                ctx.closePath();
+                
+                ctx.beginPath();
+                ctx.arc(gameObjects.ball.x - gameObjects.ball.dx * 2, gameObjects.ball.y - gameObjects.ball.dy * 2, gameObjects.ball.radius * 0.4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 2, 102, 0.1)';
+                ctx.fill();
+                ctx.closePath();
+            }
+            
+            // Start game loop
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+            
+            gameInterval = setInterval(updateGame, 16);
+        }
+
+        // Weather Visualizer
+        function initWeatherViz() {
+            const svg = document.getElementById('weather-svg');
+            const weatherButtons = document.querySelectorAll('.weather-btn');
+            
+            // Clear SVG
+            svg.innerHTML = '';
+            
+            // Weather types and visualizations
+            const weatherTypes = {
+                sunny: function() {
+                    // Draw sun
+                    const sun = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    sun.setAttribute('cx', '100');
+                    sun.setAttribute('cy', '80');
+                    sun.setAttribute('r', '30');
+                    sun.setAttribute('fill', '#ffcc00');
+                    svg.appendChild(sun);
+                    
+                    // Sun rays
+                    for (let i = 0; i < 8; i++) {
+                        const angle = i * (Math.PI / 4);
+                        const x1 = 100 + Math.cos(angle) * 35;
+                        const y1 = 80 + Math.sin(angle) * 35;
+                        const x2 = 100 + Math.cos(angle) * 50;
+                        const y2 = 80 + Math.sin(angle) * 50;
+                        
+                        const ray = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        ray.setAttribute('x1', x1);
+                        ray.setAttribute('y1', y1);
+                        ray.setAttribute('x2', x2);
+                        ray.setAttribute('y2', y2);
+                        ray.setAttribute('stroke', '#ffcc00');
+                        ray.setAttribute('stroke-width', '4');
+                        ray.setAttribute('stroke-linecap', 'round');
+                        
+                        // Animate rays
+                        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                        animate.setAttribute('attributeName', 'opacity');
+                        animate.setAttribute('values', '1;0.6;1');
+                        animate.setAttribute('dur', '2s');
+                        animate.setAttribute('repeatCount', 'indefinite');
+                        animate.setAttribute('begin', i * 0.25 + 's');
+                        
+                        ray.appendChild(animate);
+                        svg.appendChild(ray);
+                    }
+                    
+                    // Draw ground
+                    const ground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    ground.setAttribute('x', '0');
+                    ground.setAttribute('y', '150');
+                    ground.setAttribute('width', '200');
+                    ground.setAttribute('height', '50');
+                    ground.setAttribute('fill', '#33cc33');
+                    svg.appendChild(ground);
+                    
+                    // Draw trees
+                    drawTree(30, 150, 10, 20, '#663300', '#009900');
+                    drawTree(170, 150, 10, 20, '#663300', '#006600');
+                    
+                    // Temperature indicator
+                    const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tempText.setAttribute('x', '100');
+                    tempText.setAttribute('y', '40');
+                    tempText.setAttribute('text-anchor', 'middle');
+                    tempText.setAttribute('fill', '#ffffff');
+                    tempText.setAttribute('font-size', '16');
+                    tempText.textContent = '28°C';
+                    svg.appendChild(tempText);
+                },
+                
+                rainy: function() {
+                    // Draw cloud
+                    drawCloud(100, 60, 70, 30, '#cccccc');
+                    
+                    // Draw rain drops
+                    for (let i = 0; i < 15; i++) {
+                        const x = 40 + i * 8;
+                        const startY = 80 + (i % 3) * 10;
+                        
+                        const drop = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        drop.setAttribute('x1', x);
+                        drop.setAttribute('y1', startY);
+                        drop.setAttribute('x2', x);
+                        drop.setAttribute('y2', startY + 10);
+                        drop.setAttribute('stroke', '#0099ff');
+                        drop.setAttribute('stroke-width', '2');
+                        drop.setAttribute('stroke-linecap', 'round');
+                        
+                        // Animate rain
+                        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                        animate.setAttribute('attributeName', 'transform');
+                        animate.setAttribute('attributeType', 'XML');
+                        animate.setAttribute('type', 'translate');
+                        animate.setAttribute('from', '0 0');
+                        animate.setAttribute('to', '0 100');
+                        animate.setAttribute('dur', '1s');
+                        animate.setAttribute('repeatCount', 'indefinite');
+                        animate.setAttribute('begin', (i * 0.1) + 's');
+                        
+                        drop.appendChild(animate);
+                        svg.appendChild(drop);
+                    }
+                    
+                    // Draw puddles
+                    drawPuddle(50, 170, 20, 5, '#0099ff');
+                    drawPuddle(100, 180, 30, 5, '#0099ff');
+                    drawPuddle(150, 175, 25, 5, '#0099ff');
+                    
+                    // Temperature indicator
+                    const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tempText.setAttribute('x', '100');
+                    tempText.setAttribute('y', '40');
+                    tempText.setAttribute('text-anchor', 'middle');
+                    tempText.setAttribute('fill', '#ffffff');
+                    tempText.setAttribute('font-size', '16');
+                    tempText.textContent = '15°C';
+                    svg.appendChild(tempText);
+                },
+                
+                stormy: function() {
+                    // Draw dark cloud
+                    drawCloud(100, 60, 80, 40, '#333333');
+                    
+                    // Draw lightning bolts
+                    drawLightning(70, 80, [
+                        {x: 0, y: 0},
+                        {x: -10, y: 20},
+                        {x: 0, y: 20},
+                        {x: -15, y: 40}
+                    ]);
+                    
+                    drawLightning(120, 85, [
+                        {x: 0, y: 0},
+                        {x: 10, y: 15},
+                        {x: 0, y: 15},
+                        {x: 15, y: 35}
+                    ]);
+                    
+                    // Draw rain drops
+                    for (let i = 0; i < 20; i++) {
+                        const x = 30 + i * 7;
+                        const startY = 90 + (i % 4) * 10;
+                        
+                        const drop = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        drop.setAttribute('x1', x);
+                        drop.setAttribute('y1', startY);
+                        drop.setAttribute('x2', x - 3);
+                        drop.setAttribute('y2', startY + 10);
+                        drop.setAttribute('stroke', '#0099ff');
+                        drop.setAttribute('stroke-width', '2');
+                        drop.setAttribute('stroke-linecap', 'round');
+                        
+                        // Animate rain
+                        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                        animate.setAttribute('attributeName', 'transform');
+                        animate.setAttribute('attributeType', 'XML');
+                        animate.setAttribute('type', 'translate');
+                        animate.setAttribute('from', '0 0');
+                        animate.setAttribute('to', '0 100');
+                        animate.setAttribute('dur', '0.7s');
+                        animate.setAttribute('repeatCount', 'indefinite');
+                        animate.setAttribute('begin', (i * 0.05) + 's');
+                        
+                        drop.appendChild(animate);
+                        svg.appendChild(drop);
+                    }
+                    
+                    // Temperature indicator
+                    const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tempText.setAttribute('x', '100');
+                    tempText.setAttribute('y', '40');
+                    tempText.setAttribute('text-anchor', 'middle');
+                    tempText.setAttribute('fill', '#ffffff');
+                    tempText.setAttribute('font-size', '16');
+                    tempText.textContent = '12°C';
+                    svg.appendChild(tempText);
+                },
+                
+                snowy: function() {
+                    // Draw cloud
+                    drawCloud(100, 60, 70, 30, '#ffffff');
+                    
+                    // Draw snowflakes
+                    for (let i = 0; i < 30; i++) {
+                        const x = 30 + i * 5;
+                        const startY = 90 + (i % 5) * 10;
+                        
+                        const snowflake = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        snowflake.setAttribute('cx', x);
+                        snowflake.setAttribute('cy', startY);
+                        snowflake.setAttribute('r', '2');
+                        snowflake.setAttribute('fill', '#ffffff');
+                        
+                        // Animate snowflakes
+                        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                        animate.setAttribute('attributeName', 'transform');
+                        animate.setAttribute('attributeType', 'XML');
+                        animate.setAttribute('type', 'translate');
+                        animate.setAttribute('from', '0 0');
+                        animate.setAttribute('to', (Math.random() * 20 - 10) + ' 100');
+                        animate.setAttribute('dur', (Math.random() * 2 + 3) + 's');
+                        animate.setAttribute('repeatCount', 'indefinite');
+                        animate.setAttribute('begin', (i * 0.1) + 's');
+                        
+                        snowflake.appendChild(animate);
+                        svg.appendChild(snowflake);
+                    }
+                    
+                    // Draw snow on ground
+                    const ground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    ground.setAttribute('x', '0');
+                    ground.setAttribute('y', '150');
+                    ground.setAttribute('width', '200');
+                    ground.setAttribute('height', '50');
+                    ground.setAttribute('fill', '#ffffff');
+                    ground.setAttribute('rx', '20');
+                    ground.setAttribute('ry', '10');
+                    svg.appendChild(ground);
+                    
+                    // Draw snowman
+                    const base = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    base.setAttribute('cx', '100');
+                    base.setAttribute('cy', '160');
+                    base.setAttribute('r', '20');
+                    base.setAttribute('fill', '#ffffff');
+                    base.setAttribute('stroke', '#cccccc');
+                    base.setAttribute('stroke-width', '1');
+                    svg.appendChild(base);
+                    
+                    const middle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    middle.setAttribute('cx', '100');
+                    middle.setAttribute('cy', '135');
+                    middle.setAttribute('r', '15');
+                    middle.setAttribute('fill', '#ffffff');
+                    middle.setAttribute('stroke', '#cccccc');
+                    middle.setAttribute('stroke-width', '1');
+                    svg.appendChild(middle);
+                    
+                    const head = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    head.setAttribute('cx', '100');
+                    head.setAttribute('cy', '115');
+                    head.setAttribute('r', '10');
+                    head.setAttribute('fill', '#ffffff');
+                    head.setAttribute('stroke', '#cccccc');
+                    head.setAttribute('stroke-width', '1');
+                    svg.appendChild(head);
+                    
+                    // Temperature indicator
+                    const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tempText.setAttribute('x', '100');
+                    tempText.setAttribute('y', '40');
+                    tempText.setAttribute('text-anchor', 'middle');
+                    tempText.setAttribute('fill', '#ffffff');
+                    tempText.setAttribute('font-size', '16');
+                    tempText.textContent = '-5°C';
+                    svg.appendChild(tempText);
+                }
+            };
+            
+            // Helper function to draw a cloud
+            function drawCloud(x, y, width, height, color) {
+                const cloudGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle1.setAttribute('cx', x - width * 0.25);
+                circle1.setAttribute('cy', y);
+                circle1.setAttribute('r', height * 0.8);
+                circle1.setAttribute('fill', color);
+                cloudGroup.appendChild(circle1);
+                
+                const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle2.setAttribute('cx', x);
+                circle2.setAttribute('cy', y - height * 0.3);
+                circle2.setAttribute('r', height);
+                circle2.setAttribute('fill', color);
+                cloudGroup.appendChild(circle2);
+                
+                const circle3 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle3.setAttribute('cx', x + width * 0.25);
+                circle3.setAttribute('cy', y);
+                circle3.setAttribute('r', height * 0.7);
+                circle3.setAttribute('fill', color);
+                cloudGroup.appendChild(circle3);
+                
+                svg.appendChild(cloudGroup);
+                
+                // Add subtle animation
+                const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                animate.setAttribute('attributeName', 'transform');
+                animate.setAttribute('attributeType', 'XML');
+                animate.setAttribute('type', 'translate');
+                animate.setAttribute('values', '-5,0; 5,0; -5,0');
+                animate.setAttribute('dur', '10s');
+                animate.setAttribute('repeatCount', 'indefinite');
+                cloudGroup.appendChild(animate);
+            }
+            
+            // Helper function to draw a puddle
+            function drawPuddle(x, y, width, height, color) {
+                const puddle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                puddle.setAttribute('cx', x);
+                puddle.setAttribute('cy', y);
+                puddle.setAttribute('rx', width);
+                puddle.setAttribute('ry', height);
+                puddle.setAttribute('fill', color);
+                puddle.setAttribute('opacity', '0.3');
+                svg.appendChild(puddle);
+                
+                // Animate puddle ripples
+                const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                animate.setAttribute('attributeName', 'rx');
+                animate.setAttribute('values', width * 0.9 + ';' + width * 1.1 + ';' + width * 0.9);
+                animate.setAttribute('dur', '2s');
+                animate.setAttribute('repeatCount', 'indefinite');
+                puddle.appendChild(animate);
+                
+                const animate2 = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                animate2.setAttribute('attributeName', 'ry');
+                animate2.setAttribute('values', height * 0.9 + ';' + height * 1.1 + ';' + height * 0.9);
+                animate2.setAttribute('dur', '2s');
+                animate2.setAttribute('repeatCount', 'indefinite');
+                puddle.appendChild(animate2);
+            }
+            
+            // Helper function to draw lightning
+            function drawLightning(x, y, points) {
+                const lightning = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                
+                let d = `M ${x} ${y}`;
+                points.forEach(point => {
+                    d += ` L ${x + point.x} ${y + point.y}`;
+                });
+                
+                lightning.setAttribute('d', d);
+                lightning.setAttribute('stroke', '#ffcc00');
+                lightning.setAttribute('stroke-width', '3');
+                lightning.setAttribute('fill', 'none');
+                lightning.setAttribute('stroke-linecap', 'round');
+                lightning.setAttribute('stroke-linejoin', 'round');
+                
+                // Animate lightning
+                const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                animate.setAttribute('attributeName', 'opacity');
+                animate.setAttribute('values', '0;1;0.8;0;');
+                animate.setAttribute('dur', '2s');
+                animate.setAttribute('repeatCount', 'indefinite');
+                animate.setAttribute('begin', Math.random() * 2 + 's');
+                
+                lightning.appendChild(animate);
+                svg.appendChild(lightning);
+            }
+            
+            // Helper function to draw a tree
+            function drawTree(x, y, trunkWidth, trunkHeight, trunkColor, leavesColor) {
+                const trunk = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                trunk.setAttribute('x', x - trunkWidth / 2);
+                trunk.setAttribute('y', y - trunkHeight);
+                trunk.setAttribute('width', trunkWidth);
+                trunk.setAttribute('height', trunkHeight);
+                trunk.setAttribute('fill', trunkColor);
+                svg.appendChild(trunk);
+                
+                const leaves = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                leaves.setAttribute('points', 
+                    `${x - trunkWidth * 2},${y - trunkHeight} ` +
+                    `${x},${y - trunkHeight * 3} ` +
+                    `${x + trunkWidth * 2},${y - trunkHeight}`
+                );
+                leaves.setAttribute('fill', leavesColor);
+                svg.appendChild(leaves);
+                
+                // Add subtle animation to leaves
+                const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                animate.setAttribute('attributeName', 'transform');
+                animate.setAttribute('attributeType', 'XML');
+                animate.setAttribute('type', 'rotate');
+                animate.setAttribute('values', '-2,' + x + ',' + y + '; 2,' + x + ',' + y + '; -2,' + x + ',' + y);
+                animate.setAttribute('dur', '3s');
+                animate.setAttribute('repeatCount', 'indefinite');
+                leaves.appendChild(animate);
+            }
+            
+            // Set default weather
+            weatherTypes.sunny();
+            
+            // Add event listeners to weather buttons
+            weatherButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const weatherType = this.getAttribute('data-weather');
+                    svg.innerHTML = ''; // Clear current visualization
+                    weatherTypes[weatherType]();
+                });
+            });
+        }
+
+        // Maze Generator
+        function initMaze() {
+            // Set up maze when page loads
+            generateMaze();
+        }
+        
+        function generateMaze() {
+            const canvas = document.getElementById('maze-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            
+            resizeCanvas();
+            
+            // Maze parameters
+            const cellSize = 20;
+            const cols = Math.floor(canvas.width / cellSize);
+            const rows = Math.floor(canvas.height / cellSize);
+            
+            // Create maze grid
+            const grid = [];
+            for (let r = 0; r < rows; r++) {
+                grid[r] = [];
+                for (let c = 0; c < cols; c++) {
+                    grid[r][c] = {
+                        visited: false,
+                        walls: [true, true, true, true], // top, right, bottom, left
+                        x: c * cellSize,
+                        y: r * cellSize
+                    };
+                }
+            }
+            
+            // Random DFS maze generation
+            function generateMazeGrid() {
+                const stack = [];
+                const startCell = grid[0][0];
+                startCell.visited = true;
+                stack.push(startCell);
+                
+                while (stack.length > 0) {
+                    const currentCell = stack[stack.length - 1];
+                    const currentRow = Math.floor(currentCell.y / cellSize);
+                    const currentCol = Math.floor(currentCell.x / cellSize);
+                    
+                    // Find unvisited neighbors
+                    const neighbors = [];
+                    
+                    // Top
+                    if (currentRow > 0 && !grid[currentRow - 1][currentCol].visited) {
+                        neighbors.push({
+                            cell: grid[currentRow - 1][currentCol],
+                            direction: 0
+                        });
+                    }
+                    
+                    // Right
+                    if (currentCol < cols - 1 && !grid[currentRow][currentCol + 1].visited) {
+                        neighbors.push({
+                            cell: grid[currentRow][currentCol + 1],
+                            direction: 1
+                        });
+                    }
+                    
+                    // Bottom
+                    if (currentRow < rows - 1 && !grid[currentRow + 1][currentCol].visited) {
+                        neighbors.push({
+                            cell: grid[currentRow + 1][currentCol],
+                            direction: 2
+                        });
+                    }
+                    
+                    // Left
+                    if (currentCol > 0 && !grid[currentRow][currentCol - 1].visited) {
+                        neighbors.push({
+                            cell: grid[currentRow][currentCol - 1],
+                            direction: 3
+                        });
+                    }
+                    </script>
+                </body>
+            </html>
+            
+                    
